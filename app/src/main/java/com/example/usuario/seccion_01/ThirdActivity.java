@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -61,7 +62,31 @@ public class ThirdActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        // Estamos en el caso del telefono
+        switch (requestCode) {
+            case PHONE_CALL_CODE:
+                String permission = permissions[0];
+                int result = grantResults[0];
 
+                if (permission.equals(Manifest.permission.CALL_PHONE)) {
+                    //Comptrobar si ha sido aceptado o denegado la peticion de permiso
+                    if (result == PackageManager.PERMISSION_GRANTED) {
+                        // Condedio su permiso
+                        String phoneNumber = editTextPhone.getText().toString();
+                        Intent intentCall = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber));
+                        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                            return;
+                        }
+                        startActivity(intentCall);
+                    } else {
+                        // No condedio su permiso
+                        Toast.makeText(ThirdActivity.this, "You declined the access", Toast.LENGTH_LONG).show();
+                    }
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }

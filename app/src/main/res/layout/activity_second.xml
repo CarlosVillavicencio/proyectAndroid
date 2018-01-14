@@ -15,4 +15,14 @@
         android:text=""
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="163dp" />
+
+    <Button
+        android:id="@+id/buttonGoSharing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Go Sharing"
+        android:background="#E91E63"
+        android:textColor="#FFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="0dp" />
 </android.support.constraint.ConstraintLayout>
