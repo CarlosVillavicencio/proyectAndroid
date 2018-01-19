@@ -28,6 +28,7 @@ public class SecondActivity extends AppCompatActivity {
             textView.setText(greeter);
         } else {
             Toast.makeText(SecondActivity.this, "It is empty!", Toast.LENGTH_LONG).show();
+            /**/
         }
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
