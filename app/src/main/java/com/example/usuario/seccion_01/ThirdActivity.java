@@ -1,6 +1,7 @@
 package com.example.usuario.seccion_01;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -23,11 +24,15 @@ public class ThirdActivity extends AppCompatActivity {
     private ImageButton imgBtnWeb;
     private ImageButton imgBtnCamera;
     private final int PHONE_CALL_CODE = 100;
+    private final int PICTURE_FROM_CAMERA = 50;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_third);
+
+        //Activar flecha ir atras
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         editTextPhone = (EditText) findViewById(R.id.editTextPhone);
         editTextWeb = (EditText) findViewById(R.id.editTextWeb);
@@ -95,48 +100,31 @@ public class ThirdActivity extends AppCompatActivity {
                     Intent intentWeb = new Intent();
                     intentWeb.setAction(Intent.ACTION_VIEW);
                     intentWeb.setData(Uri.parse("http://" + url));
-
                     //Contactos
                     Intent intentContacts = new Intent(Intent.ACTION_VIEW, Uri.parse("content://contacts/people"));
                     //Email rapido
                     Intent intentMailTo = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + email));
                     //Email completo
-
-                    //este primer ejemplo de email completo no funciona para android 7.0 por temas de seguridad de google
-//                    Intent intentMail = new Intent(Intent.ACTION_VIEW, Uri.parse(email));
-//                    intentMail.setClassName("com.google.android.gm","com.google.andro‌​id.gm.ComposeActivit‌​yGmail");
-//                    intentMail.setType("plain/text");
-//                    intentMail.putExtra(Intent.EXTRA_SUBJECT, "Mail's title");
-//                    intentMail.putExtra(Intent.EXTRA_TEXT, "Hi there, I love MyForm app, but...");
-//                    intentMail.putExtra(Intent.EXTRA_EMAIL, new String[]{"carl_13_95@hotmail.com"});
-
-//                    Intent intentMail = new Intent(Intent.ACTION_VIEW, Uri.parse(email));
-//                    intentMail.setType("message/rfc822");
-//                    intentMail.putExtra(Intent.EXTRA_SUBJECT, "Mail's title");
-//                    intentMail.putExtra(Intent.EXTRA_TEXT, "Hi there, I love MyForm app, but...");
-//                    intentMail.putExtra(Intent.EXTRA_EMAIL, new String[]{"carl_13_95@hotmail.com", "carl_13_95sss@hotmail.com"});
-//                    startActivity(Intent.createChooser(intentMail, "Elige cliente de correo"));
-                    Intent emailsss = new Intent(Intent.ACTION_SEND);
-                    emailsss.putExtra(Intent.EXTRA_EMAIL, new String[]{"abc@gmail.com"});
-                    emailsss.putExtra(Intent.EXTRA_SUBJECT, "Sunject Text Here..");
-                    emailsss.putExtra(Intent.EXTRA_TEXT, "");
-                    emailsss.setType("message/rfc822");
-                    startActivity(Intent.createChooser(emailsss, "Send Mail Using :"));
-//                    startActivity(intentMail);
+                    //preguntando cliente de correo
+                    /*
+                    Intent intentMail = new Intent(Intent.ACTION_SEND, Uri.parse(email));
+                    intentMail.setType("plain/text");
+                    intentMail.putExtra(Intent.EXTRA_SUBJECT, "Mail's title");
+                    intentMail.putExtra(Intent.EXTRA_TEXT, "Hi there, I love MyForm app, but...");
+                    intentMail.putExtra(Intent.EXTRA_EMAIL, new String[]{"carl_13_95@hotmail.com","algifd@gmail.com"});
+                    startActivity(Intent.createChooser(intentMail,"Elige cliente de correo"));
+                    */
                     //ejemplo para android 7.0 sacado de
                     //https://medium.com/@cketti/android-sending-email-using-intents-3da63662c58f
                     String subject = "Mail's title";
                     String bodyText = "Hi there, I love MyForm app, but...";
-                    String mailto = "mailto:bob@example.org" +
+                    String mailto = "mailto:bob@example.org" + ",alicess@exampless.com" +
                             "?cc=" + "alice@example.com" +
                             "&subject=" + Uri.encode(subject) +
                             "&body=" + Uri.encode(bodyText);
-
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
                     emailIntent.setData(Uri.parse(mailto));
-//                    startActivity(emailIntent);
-
-
+                    startActivity(emailIntent);
                     //telefono 2, sin permisos requeridos
                     Intent intentPhone = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:982152323"));
 //                    startActivity(intentWeb);
@@ -147,7 +135,29 @@ public class ThirdActivity extends AppCompatActivity {
                 }
             }
         });
+        imgBtnCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentCamera = new Intent("android.media.action.IMAGE_CAPTURE");
+                startActivityForResult(intentCamera, PICTURE_FROM_CAMERA);
+            }
+        });
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case PICTURE_FROM_CAMERA:
+                if (resultCode == Activity.RESULT_OK) {
+                    String result = data.toUri(0);
+                    Toast.makeText(this, "Result: " + result, Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, "There was an error with the picture, try again.", Toast.LENGTH_LONG).show();
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
